@@ -29,7 +29,9 @@
   /* Text */
   --text: #e9eef9;
   --text-2: #97a3b8;
-  --text-3: #626f85;
+  /* Lightened from #626f85 (3.94:1 on --bg-0) to clear WCAG AA 4.5:1 for the
+     9.5-12.5px mono labels that use this token. */
+  --text-3: #7c8aa3;
 
   --shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.85);
   --shadow-accent: 0 12px 30px -14px rgba(62, 139, 255, 0.45);
@@ -346,6 +348,115 @@ p {
 
 .skip-link:focus-visible {
   transform: translateY(0);
+}
+
+/*
+  The skip link targets #main, but <main> is not focusable by default, so the
+  browser would scroll without moving keyboard focus. tabindex="-1" on <main>
+  (see App.jsx) makes the target programmatically focusable, and this rule
+  suppresses the focus ring for that non-interactive jump.
+*/
+main:focus {
+  outline: none;
+}
+
+/*
+  Without JavaScript the React app renders nothing, so the <noscript> block is
+  the entire page. It reuses the same tokens to stay on-brand.
+*/
+.noscript-fallback {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 72px var(--shell-pad);
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+.noscript-fallback h1 {
+  font-size: clamp(2rem, 6vw, 3rem);
+  margin-bottom: 8px;
+}
+
+.noscript-fallback p + p {
+  margin-top: 16px;
+}
+
+.noscript-fallback ul {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+
+.noscript-fallback a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.noscript-fallback a:hover {
+  text-decoration: underline;
+}
+
+/*
+  Comfortable tap targets on touch devices. The desktop sizing is untouched;
+  these only apply where the primary input is coarse (finger).
+*/
+@media (pointer: coarse) {
+  .btn,
+  .nav-links a,
+  .footer-nav a,
+  .footer-social a,
+  .profile-card,
+  .nav-mobile a {
+    min-height: 44px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-mobile a,
+  .footer-nav a {
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ---------- Progressive-enhancement scroll reveal ----------
+   Content is VISIBLE by default. The hidden start state is scoped to
+   `html.js`, which index.html sets from an inline script. If scripting is
+   unavailable the class is never added and the page renders in full — the
+   animation enhances the experience but can never hide essential content.
+   There is no user-agent or bot detection involved. */
+
+.reveal {
+  opacity: 1;
+}
+
+html.js .reveal[data-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 20px));
+}
+
+.reveal[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal[data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 /* ---------- Background technical details ---------- */

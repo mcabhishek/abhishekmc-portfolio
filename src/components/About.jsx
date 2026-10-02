@@ -1,6 +1,5 @@
 import { Cloud, Download, Eye, Server, ShieldCheck } from "lucide-react";
 import { SITE_CONFIG } from "../config/site.js";
-import profileImg from "../assets/abhishek-mc.webp";
 import Reveal from "./Reveal.jsx";
 
 const PILLARS = [
@@ -19,10 +18,10 @@ export default function About() {
         <Reveal className="about-copy">
           <div className="about-avatar">
             <img
-              src={profileImg}
-              alt="Abhishek MC — Software Developer"
-              width="416"
-              height="453"
+              src="/images/abhishek-mc-256.webp"
+              alt="Abhishek MC"
+              width="128"
+              height="128"
               loading="lazy"
               decoding="async"
             />

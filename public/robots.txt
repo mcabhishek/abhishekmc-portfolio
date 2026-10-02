@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Everything on this site is public and intended to be indexed: the page
+# itself, its images, CSS and JavaScript. No crawl-delay is set — Google
+# ignores the directive and this site is a single small page.
+
+Sitemap: https://abhishekmc.in/sitemap.xml

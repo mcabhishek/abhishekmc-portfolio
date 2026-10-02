@@ -2,7 +2,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Cloud, Eye, Server, ShieldCheck } from "lucide-react";
 import { GithubIcon } from "./BrandIcons.jsx";
 import { SITE_CONFIG } from "../config/site.js";
-import profileImg from "../assets/abhishek-mc.webp";
 import SystemVisual from "./SystemVisual.jsx";
 
 const CAPABILITIES = [
@@ -80,8 +79,10 @@ export default function Hero() {
             <span className="portrait-tick portrait-tick--right" aria-hidden="true" />
             <div className="portrait-frame">
               <img
-                src={profileImg}
-                alt="Abhishek MC — Software Developer"
+                src="/images/abhishek-mc-416.webp"
+                srcSet="/images/abhishek-mc-416.webp 416w, /images/abhishek-mc-832.webp 832w"
+                sizes="(max-width: 640px) 74vw, (max-width: 1024px) 40vw, 360px"
+                alt="Abhishek MC"
                 width="416"
                 height="453"
                 fetchPriority="high"

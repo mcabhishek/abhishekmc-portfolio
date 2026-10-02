@@ -1,0 +1,40 @@
+{
+  "name": "Abhishek MC | Software Developer",
+  "short_name": "Abhishek MC",
+  "description": "Abhishek MC — software developer focused on backend development, cloud integration, data security, computer vision, and scalable applications.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#05080F",
+  "theme_color": "#05080F",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["portfolio", "developer", "personal"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

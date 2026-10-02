@@ -33,7 +33,9 @@ function App() {
 
       <Navbar />
 
-      <main id="main">
+      {/* tabindex="-1" lets the skip link move keyboard focus into <main>,
+          not just the scroll position. The focus ring is suppressed in CSS. */}
+      <main id="main" tabIndex={-1}>
         <Hero />
         <About />
         <Skills />

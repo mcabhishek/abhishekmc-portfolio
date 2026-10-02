@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { GithubIcon } from "./BrandIcons.jsx";
@@ -10,6 +10,8 @@ export default function Navbar() {
   const [activeId, setActiveId] = useState("home");
   const [midnight, setMidnight] = useState(false);
   const reduceMotion = useReducedMotion();
+  const burgerRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   /* Compact glass effect once the page leaves the top. */
   useEffect(() => {
@@ -39,14 +41,25 @@ export default function Navbar() {
     return () => observer.disconnect();
   }, []);
 
-  /* Close the mobile menu on Escape. */
+  /*
+    Close the mobile menu on Escape and return focus to the trigger, so
+    keyboard users are never stranded inside a closed menu.
+  */
   useEffect(() => {
     if (!menuOpen) return undefined;
     const onKeyDown = (event) => {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        burgerRef.current?.focus();
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
+
+  /* Move focus into the menu when it opens, for keyboard and screen readers. */
+  useEffect(() => {
+    if (menuOpen) mobileMenuRef.current?.focus();
   }, [menuOpen]);
 
   const toggleTheme = () => {
@@ -109,6 +122,7 @@ export default function Navbar() {
             )}
           </button>
           <button
+            ref={burgerRef}
             type="button"
             className="btn btn-ghost nav-burger"
             onClick={() => setMenuOpen((open) => !open)}
@@ -129,8 +143,10 @@ export default function Navbar() {
         {menuOpen && (
           <motion.nav
             id="mobile-menu"
+            ref={mobileMenuRef}
             className="nav-mobile"
             aria-label="Mobile"
+            tabIndex={-1}
             initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -10 }}

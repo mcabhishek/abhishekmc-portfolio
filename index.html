@@ -6,34 +6,79 @@
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#05080F" />
 
+    <!--
+      Progressive-enhancement flag. The scroll-reveal animation only hides
+      content when it is certain that JavaScript can un-hide it again. If
+      scripting is unavailable this never runs, so the CSS keeps every
+      section visible. This is a capability check, not user-agent detection.
+    -->
+    <script>
+      document.documentElement.classList.add("js");
+    </script>
+
     <title>Abhishek MC | Software Developer</title>
     <meta
       name="description"
-      content="Abhishek MC — software developer focused on backend development, cloud integration, data security, computer vision, and scalable applications."
+      content="Abhishek MC is a software developer focused on backend development, cloud integration, data security and computer vision, with projects, skills and research."
     />
-    <link rel="canonical" href="https://example.com/" />
+    <meta name="author" content="Abhishek MC" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://abhishekmc.in/" />
 
-    <!-- Open Graph -->
+    <!-- Open Graph.
+         og:type is "website": this URL is the site root. The OGP "profile"
+         type describes a platform profile page and expects profile:username /
+         profile:first_name style fields, which do not apply here. The
+         "this page is a person" semantics are expressed correctly in the
+         JSON-LD ProfilePage/Person graph further down. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="AbhishekMC" />
     <meta property="og:title" content="Abhishek MC | Software Developer" />
     <meta
       property="og:description"
-      content="Abhishek MC — software developer focused on backend development, cloud integration, data security, computer vision, and scalable applications."
+      content="Abhishek MC is a software developer focused on backend development, cloud integration, data security and computer vision, with projects, skills and research."
     />
-    <meta property="og:url" content="https://example.com/" />
-    <meta property="og:image" content="https://example.com/og-image.png" />
+    <meta property="og:url" content="https://abhishekmc.in/" />
+    <meta property="og:image" content="https://abhishekmc.in/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Abhishek MC, software developer, with his name, role and website address."
+    />
+    <meta property="og:locale" content="en_IN" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Abhishek MC | Software Developer" />
     <meta
       name="twitter:description"
-      content="Abhishek MC — software developer focused on backend development, cloud integration, data security, computer vision, and scalable applications."
+      content="Abhishek MC is a software developer focused on backend development, cloud integration, data security and computer vision, with projects, skills and research."
     />
-    <meta name="twitter:image" content="https://example.com/og-image.png" />
+    <meta name="twitter:image" content="https://abhishekmc.in/og-image.jpg" />
+    <meta
+      name="twitter:image:alt"
+      content="Abhishek MC, software developer, with his name, role and website address."
+    />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!--
+      The hero portrait is the LCP element. Preloading it with the same
+      srcset/sizes the <img> uses lets the browser start the fetch during HTML
+      parsing instead of waiting for React to hydrate.
+    -->
+    <link
+      rel="preload"
+      as="image"
+      href="/images/abhishek-mc-416.webp"
+      imagesrcset="/images/abhishek-mc-416.webp 416w, /images/abhishek-mc-832.webp 832w"
+      imagesizes="(max-width: 640px) 74vw, (max-width: 1024px) 40vw, 360px"
+      fetchpriority="high"
+    />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,6 +89,40 @@
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <!--
+        This site is a client-rendered React app, so without JavaScript the
+        page would otherwise be blank. This fallback repeats only the factual
+        identity content for crawlers that do not execute JS and for visitors
+        with scripting disabled.
+      -->
+      <div class="noscript-fallback">
+        <h1>Abhishek MC</h1>
+        <p>Software Developer</p>
+        <p>
+          Abhishek MC — software developer focused on backend development,
+          cloud integration, data security, computer vision, and scalable
+          applications.
+        </p>
+        <ul>
+          <li>
+            <a href="https://github.com/mcabhishek">GitHub</a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/abhishek-mc">LinkedIn</a>
+          </li>
+          <li>
+            <a href="https://leetcode.com/u/Abhimc03/">LeetCode</a>
+          </li>
+          <li><a href="mailto:mcabhishek2002@gmail.com">mcabhishek2002@gmail.com</a></li>
+          <li><a href="tel:+916366578849">+91 6366578849</a></li>
+        </ul>
+        <p>
+          This portfolio requires JavaScript for the full experience. Please
+          enable JavaScript to view the projects, research and contact form.
+        </p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
