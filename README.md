@@ -95,6 +95,11 @@ Re-run with `npm run images` after changing the source photo.
 
 - `index.html` carries the canonical URL, Open Graph, Twitter card, manifest
   and favicon links.
+- **The `<h1>` is the person's name** (`Abhishek MC`), not a slogan. This is the
+  single most important on-page signal for a query like "Abhishek MC": the
+  whole page is a profile for one individual, so the name leads. The role is
+  stated in the pill immediately above and restated in the lede below, and is
+  never repeated inside the `<h1>` itself.
 - `public/robots.txt` and `public/sitemap.xml` are real static files. They are
   the single most important fix here: previously both paths fell through to the
   SPA `index.html` and were served as `text/html`, which search engines treat
@@ -113,14 +118,31 @@ Re-run with `npm run images` after changing the source photo.
   `profile` type is for platform profile pages and expects `profile:*`
   fields. The person semantics live in the JSON-LD `ProfilePage` / `Person`
   nodes, which is where they belong.
+- `og:description` / `twitter:description` use `SITE_CONFIG.socialDescription`,
+  which is intentionally different from `SITE_CONFIG.description`: a link
+  preview has far less room than a search result, so it leads with what the
+  page contains instead of repeating the meta description.
+
+### Keeping the metadata honest
+
+`index.html` is a static file, so the four description strings are literal
+copies of the values in `site.js`. `npm run verify:seo` fails the build if
+they ever drift apart, and additionally asserts there is exactly **one**
+`<title>`, meta description, canonical, `og:title`, `og:url`, `og:description`
+and JSON-LD block — no conflicting second versions.
+
+`sameAs` and `knowsAbout` are restricted to what the page actually shows. Do
+not add a profile, employer, credential or skill that is not rendered on the
+site: `verify_seo.py` fails the build on unverified `alumniOf` / `worksFor` /
+`award` / `hasCredential` / `publication` claims.
 
 ### Verifying after a deploy
 
 ```bash
 npm run build
-npm run verify:seo      # metadata, JSON-LD, indexability, no-cloaking, LCP
+npm run verify:seo      # metadata, JSON-LD, indexability, duplicates, no-cloaking
 npm run verify:served   # real files + correct Content-Type for every SEO route
-npm run verify:render   # real browser: content visible with and without JS
+npm run verify:render   # real browser: H1 text, alt attrs, visible with and without JS
 ```
 
 `verify:render` needs Playwright once:

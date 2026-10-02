@@ -19,7 +19,7 @@ export default function About() {
           <div className="about-avatar">
             <img
               src="/images/abhishek-mc-256.webp"
-              alt="Abhishek MC"
+              alt="Abhishek MC profile photo"
               width="128"
               height="128"
               loading="lazy"

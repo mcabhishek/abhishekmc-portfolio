@@ -111,6 +111,18 @@ def main() -> int:
             h1s = page.eval_on_selector_all("h1", "els => els.length")
             check("exactly one <h1> in the rendered DOM", h1s == 1, f"count={h1s}")
 
+            h1_text = page.eval_on_selector("h1", "el => el.innerText")
+            check("<h1> names the person",
+                  "Abhishek MC" in h1_text, repr(h1_text[:80]))
+            check("<h1> is the name, not a slogan",
+                  h1_text.strip().upper().startswith("ABHISHEK MC"),
+                  repr(h1_text[:80]))
+
+            alts = page.eval_on_selector_all(
+                "img", "els => els.map(e => e.getAttribute('alt'))")
+            check("every rendered <img> has an alt attribute",
+                  all(a is not None for a in alts), str(alts))
+
             hero_loaded = page.eval_on_selector(
                 ".portrait-frame img", "el => el.complete && el.naturalWidth > 0")
             check("hero portrait actually loaded", bool(hero_loaded))

@@ -28,14 +28,22 @@ export const SITE_CONFIG = {
   tagline: "Software • Systems • Security",
   title: "Abhishek MC | Software Developer",
   /*
-    Used verbatim for <meta name="description">, og:description,
-    twitter:description and the JSON-LD Person description, so the four can
-    never disagree. Wording tracks what the page actually shows: the
-    specialisms from the hero/About copy plus the projects, skills and
-    research sections. No unsupported employers, dates or credentials.
+    Used verbatim for <meta name="description"> and the JSON-LD Person
+    description, so the two can never disagree. Wording tracks what the page
+    actually shows: the specialisms from the hero/About copy plus the
+    projects, skills and research sections. No unsupported employers, dates
+    or credentials.
   */
   description:
-    "Abhishek MC is a software developer focused on backend development, cloud integration, data security and computer vision, with projects, skills and research.",
+    "Abhishek MC is a Software Developer specializing in backend development, cloud integration, data security, computer vision, and scalable applications.",
+  /*
+    Social card copy for og:description / twitter:description.
+    Deliberately different from `description`: a link preview has far less
+    room than a search result, so it leads with what the page contains
+    rather than repeating the meta description.
+  */
+  socialDescription:
+    "Portfolio, projects, research, skills, and professional profile of Abhishek MC.",
 };
 
 /**
@@ -127,6 +135,7 @@ export function buildJsonLd() {
           "Cloud Integration",
           "Data Security",
           "Computer Vision",
+          "Scalable Applications",
           "Embedded Systems",
         ],
         sameAs: SAME_AS,

@@ -33,13 +33,24 @@ export default function Hero() {
             Software Developer
           </motion.p>
 
+          {/*
+            The single page H1. It leads with the person's name because the
+            whole page is a profile for one individual, and a name-led H1 is
+            what lets a search engine tie this URL to the query "Abhishek MC".
+            The role is already stated in the pill directly above and restated
+            in the lede below, so it is deliberately not repeated here.
+            Same two-tone treatment (white line + gradient accent) and the same
+            markup shape as before — only the words changed.
+          */}
           <motion.h1 id="hero-title" {...rise(0.12)}>
-            Building secure systems.
-            <span className="hero-title-accent">Solving real problems.</span>
+            Abhishek MC
+            <span className="hero-title-accent">
+              Building secure systems. Solving real problems.
+            </span>
           </motion.h1>
 
           <motion.p className="hero-lede" {...rise(0.2)}>
-            Software developer focused on backend development, cloud
+            Software developer specializing in backend development, cloud
             integration, data security, computer vision, and scalable
             applications.
           </motion.p>
@@ -82,7 +93,7 @@ export default function Hero() {
                 src="/images/abhishek-mc-416.webp"
                 srcSet="/images/abhishek-mc-416.webp 416w, /images/abhishek-mc-832.webp 832w"
                 sizes="(max-width: 640px) 74vw, (max-width: 1024px) 40vw, 360px"
-                alt="Abhishek MC"
+                alt="Abhishek MC profile photo"
                 width="416"
                 height="453"
                 fetchPriority="high"

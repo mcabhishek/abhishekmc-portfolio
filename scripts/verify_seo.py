@@ -345,6 +345,119 @@ def _bundle_text() -> str:
     return "\n".join(parts)
 
 
+def check_duplicates(html: str) -> None:
+    """Requirement: no conflicting second versions of the same metadata."""
+    print("\nDuplicate metadata")
+
+    singletons = {
+        "<title>": r"<title\b",
+        'meta name="description"': r'<meta[^>]+name="description"',
+        'meta name="author"': r'<meta[^>]+name="author"',
+        'meta name="robots"': r'<meta[^>]+name="robots"',
+        'meta name="viewport"': r'<meta[^>]+name="viewport"',
+        'link rel="canonical"': r'<link[^>]+rel="canonical"',
+        'og:type': r'<meta[^>]+property="og:type"',
+        'og:title': r'<meta[^>]+property="og:title"',
+        'og:url': r'<meta[^>]+property="og:url"',
+        'og:description': r'<meta[^>]+property="og:description"',
+        'og:image': r'<meta[^>]+property="og:image"',
+        'twitter:card': r'<meta[^>]+name="twitter:card"',
+        'twitter:title': r'<meta[^>]+name="twitter:title"',
+        'twitter:description': r'<meta[^>]+name="twitter:description"',
+        'twitter:image': r'<meta[^>]+name="twitter:image"',
+        "JSON-LD block": r'<script[^>]+type="application/ld\+json"',
+    }
+    for label, pattern in singletons.items():
+        found = len(re.findall(pattern, html, re.I))
+        check(f"exactly one {label}", found == 1, f"count={found}")
+
+    check('no <meta name="keywords"> (keyword stuffing)',
+          not re.search(r'<meta[^>]+name="keywords"', html, re.I))
+
+    def value(pattern: str) -> str | None:
+        found = re.search(pattern, html, re.I | re.S)
+        return found.group(1) if found else None
+
+    title = value(r"<title>(.*?)</title>")
+    check("og:title matches <title>",
+          value(r'property="og:title" content="(.*?)"') == title)
+    check("twitter:title matches <title>",
+          value(r'name="twitter:title" content="(.*?)"') == title)
+    check("twitter:description matches og:description",
+          value(r'name="twitter:description" content="(.*?)"')
+          == value(r'property="og:description" content="(.*?)"'))
+
+
+def _site_config_str(key: str) -> str | None:
+    """Read one string value out of src/config/site.js."""
+    src = read(os.path.join(ROOT, "src", "config", "site.js"))
+    found = re.search(rf'^\s*{key}:\s*"((?:[^"\\]|\\.)*)"', src, re.M | re.S)
+    return found.group(1) if found else None
+
+
+def check_config_sync(html: str) -> None:
+    """index.html is static, so prove it still matches the SITE_CONFIG source."""
+    print("\nindex.html <-> SITE_CONFIG consistency")
+    description = _site_config_str("description")
+    social = _site_config_str("socialDescription")
+
+    def meta(pattern: str) -> str | None:
+        found = re.search(pattern, html, re.I | re.S)
+        return found.group(1) if found else None
+
+    check("meta description == SITE_CONFIG.description",
+          meta(r'<meta[^>]+name="description"[^>]+content="(.*?)"') == description)
+    check("og:description == SITE_CONFIG.socialDescription",
+          meta(r'<meta[^>]+property="og:description"[^>]+content="(.*?)"') == social)
+    check("twitter:description == SITE_CONFIG.socialDescription",
+          meta(r'<meta[^>]+name="twitter:description"[^>]+content="(.*?)"') == social)
+    check("<title> == SITE_CONFIG.title",
+          meta(r"<title>(.*?)</title>") == _site_config_str("title"))
+
+
+def check_source_semantics() -> None:
+    """Heading hierarchy and image alt text, checked in the app source.
+
+    `<motion.h1>` is matched as well as `<h1>` because that is how the heading
+    is written in this codebase; it renders as a real <h1>.
+    """
+    print("\nSource semantics: H1 and image alt text")
+    src_dir = os.path.join(ROOT, "src")
+    h1_where: list[str] = []
+    h1_text = ""
+    images = 0
+    images_without_alt: list[str] = []
+
+    for folder, _dirs, files in os.walk(src_dir):
+        for name in sorted(files):
+            if not name.endswith((".js", ".jsx", ".ts", ".tsx")):
+                continue
+            path = os.path.join(folder, name)
+            rel = os.path.relpath(path, ROOT).replace("\\", "/")
+            # JSX comments must not be mistaken for real markup.
+            body = re.sub(r"\{/\*.*?\*/\}", " ", read(path), flags=re.S)
+
+            for found in re.finditer(
+                r"<(?:motion\.)?h1\b[^>]*>(.*?)</(?:motion\.)?h1>", body, re.S | re.I
+            ):
+                h1_where.append(rel)
+                h1_text += " " + re.sub(r"<[^>]+>", " ", found.group(1))
+            for found in re.finditer(r"<img\b[^>]*>", body, re.S | re.I):
+                images += 1
+                if "alt=" not in found.group(0):
+                    images_without_alt.append(rel)
+
+    flat = re.sub(r"\s+", " ", h1_text).strip()
+    check("exactly one <h1> in the app", len(h1_where) == 1, str(h1_where))
+    check("the <h1> contains the person's name",
+          "Abhishek MC" in flat, flat[:90])
+    check("the <h1> leads with the name",
+          flat.upper().startswith("ABHISHEK MC"), flat[:90])
+    check("the app renders at least one image", images > 0, str(images))
+    check("every <img> declares an alt attribute",
+          not images_without_alt, ", ".join(sorted(set(images_without_alt))))
+
+
 def main() -> None:
     index = os.path.join(DIST, "index.html")
     if not os.path.exists(index):
@@ -356,6 +469,9 @@ def main() -> None:
     jsonld = check_json_ld(html)
     check_crawl_files()
     check_indexability(html)
+    check_duplicates(html)
+    check_config_sync(html)
+    check_source_semantics()
     check_no_cloaking()
     check_lcp_preload(html)
     if jsonld:
